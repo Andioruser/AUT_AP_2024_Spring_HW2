@@ -4,6 +4,8 @@
 #include <compare>  // For std::strong_ordering
 #include <optional> // For std::optional
 #include <string>   // For std::string
+#include <fstream>
+#include <iostream>
 
 // Models an individual with personal attributes
 class Person {
