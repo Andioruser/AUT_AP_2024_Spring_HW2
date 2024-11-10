@@ -61,12 +61,12 @@ void Person::get_info(std::optional<std::string> file_name = std::nullopt) const
                         "\nGender: " + gender + "\nFingerprint Hash: " + std::to_string(hashed_fingerprint) +
                         "\nSocioeconomic Rank: " + std::to_string(socioeconomic_rank) +
                         "\nAlive: " + (is_alive ? "Yes" : "No");
-    std::cout<<info<<std::endl;
+    
     if (file_name) {
         std::ofstream file(*file_name);
         file << info;
     } else {
-        std::cout<<"No valid filename exists here";
+        std::cout<<info<<std::endl;
     }
 }
 
