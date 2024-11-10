@@ -1,5 +1,7 @@
 #include "Person.h"
 #include "Utils.h"
+#include <fstream>
+#include <iostream>
 
 Person::Person(std::string &name, std::size_t age, std::string &gender,
         std::string &fingerprint, size_t socioeconomic_rank, bool is_alive)
