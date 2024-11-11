@@ -42,6 +42,7 @@ public:
     const std::map<Person*, double>& get_customer_2_unpaid_loan_map(std::string& bank_fingerprint) const;
     double get_bank_total_balance(std::string& bank_fingerprint) const;
     double get_bank_total_loan(std::string& bank_fingerprint) const;
+    bool authenticate(const std::string& bank_fingerprint) const;
 
     // Account Setters requiring owner and bank authentication
     bool set_owner(Account& account, const Person* new_owner, std::string& owner_fingerprint, std::string& bank_fingerprint);

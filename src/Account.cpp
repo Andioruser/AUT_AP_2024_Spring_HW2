@@ -8,7 +8,7 @@
 #include <fstream>
 
 Account::Account(const Person *const owner, const Bank *const bank, std::string &password)
-    : owner(const_cast<Person *>(owner)), bank(bank), password(password), account_number(random_account()), balance(false), account_status(false)
+    :owner(const_cast<Person *>(owner)), bank(bank), password(password), account_number(random_account()), balance(false), account_status(false)
 {
 }
 
