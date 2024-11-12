@@ -12,14 +12,14 @@ Bank::Bank(const std::string& bank_name, const std::string& bank_fingerprint)
 
 Account* Bank::create_account(Person& owner, const std::string& owner_fingerprint, std::string password) {
     Account * account = new Account(const_cast<Person*>(&owner),this,password);
-    account->authenticate(owner_fingerprint);
+    authenticate(owner_fingerprint,owner.get_hashed_fingerprint());
     bank_accounts.push_back(account);
     account_2_customer.insert({account,&owner});
     customer_2_accounts[&owner].push_back(account);
     return account;
 }
 bool Bank::delete_account(Account& account, const std::string& owner_fingerprint) {
-    account.authenticate(owner_fingerprint);
+    authenticate(owner_fingerprint,account.owner->get_hashed_fingerprint());
     if(account_2_customer.count(&account)) {
         auto owner_account = customer_2_accounts[account_2_customer[&account]];
         auto it = std::find(bank_accounts.begin(),bank_accounts.end(),&account);
@@ -60,14 +60,14 @@ bool Bank::delete_customer(Person& owner, const std::string& owner_fingerprint) 
 }
 
 bool Bank::deposit(Account& account, const std::string& owner_fingerprint, double amount) {
-    account.authenticate(owner_fingerprint);
+    authenticate(owner_fingerprint,account.owner->get_hashed_fingerprint());
     if(account.balance < amount) return false;
     account.balance -= amount;
     bank_total_balance += amount;
     return true;
 }
 bool Bank::withdraw(Account& account, const std::string& owner_fingerprint, double amount) {
-    account.authenticate(owner_fingerprint);
+    authenticate(owner_fingerprint,account.owner->get_hashed_fingerprint());
     if(bank_total_balance < amount) return false;
     bank_total_balance -= amount;
     account.balance += amount;
@@ -75,8 +75,8 @@ bool Bank::withdraw(Account& account, const std::string& owner_fingerprint, doub
 }
 bool Bank::transfer(Account& source, Account& destination, const std::string& owner_fingerprint,
     const std::string& CVV2, const std::string& password, const std::string& exp_date, double amount) {
-    source.authenticate(owner_fingerprint);
-    destination.authenticate(owner_fingerprint);
+    authenticate(owner_fingerprint,source.owner->get_hashed_fingerprint());
+    authenticate(owner_fingerprint,destination.owner->get_hashed_fingerprint());
     if(source.get_CVV2(const_cast<std::string&>(owner_fingerprint)) == CVV2 && 
         source.get_password(const_cast<std::string&>(owner_fingerprint)) == password &&
         source.get_exp_date(const_cast<std::string&>(owner_fingerprint)) == exp_date)   {
@@ -89,7 +89,7 @@ bool Bank::transfer(Account& source, Account& destination, const std::string& ow
     return true;
 }
 bool Bank::take_loan(Account& account, const std::string& owner_fingerprint, double amount) {
-    account.authenticate(owner_fingerprint);
+    authenticate(owner_fingerprint,account.owner->get_hashed_fingerprint());
     auto customer = account_2_customer[&account];
     auto accounts = customer_2_accounts[customer];
     double accounts_balance = 0.0;
@@ -182,7 +182,7 @@ double Bank::get_bank_total_loan(std::string& bank_fingerprint) const {
 
 // Account Setters requiring owner and bank authentication
 bool Bank::set_owner(Account& account, const Person* new_owner, std::string& owner_fingerprint, std::string& bank_fingerprint) {
-    account.authenticate(owner_fingerprint);
+    authenticate(owner_fingerprint,account.owner->get_hashed_fingerprint());
     authenticate(bank_fingerprint,get_hashed_bank_fingerprint());
     account.owner = const_cast<Person*>(new_owner);
     return true;
