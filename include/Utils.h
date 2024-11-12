@@ -8,7 +8,7 @@
 
 bool authenticate(const std::string& fingerprint,std::size_t hashed_fingerprint);
 
-
+const std::string random_account();
 
 
 #endif // UTILS_H
