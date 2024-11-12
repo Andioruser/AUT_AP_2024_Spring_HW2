@@ -2,10 +2,6 @@
 #include "Bank.h"
 #include "Person.h"
 #include "Utils.h"
-#include <iostream>
-#include <sstream>
-#include <random>
-#include <fstream>
 
 Account::Account(const Person *const owner, const Bank *const bank, std::string &password)
     :owner(const_cast<Person *>(owner)), bank(bank), password(password), account_number(random_account()), balance(false), account_status(false)
@@ -32,7 +28,7 @@ bool Account::get_status() const
 
 std::string Account::get_CVV2(std::string &owner_fingerprint) const
 {
-    if (authenticate(owner_fingerprint))
+    if (authenticate(owner_fingerprint,owner->get_hashed_fingerprint()))
     {
         return CVV2;
     }
@@ -40,7 +36,7 @@ std::string Account::get_CVV2(std::string &owner_fingerprint) const
 
 std::string Account::get_password(std::string &owner_fingerprint) const
 {
-    if (authenticate(owner_fingerprint))
+    if (authenticate(owner_fingerprint,owner->get_hashed_fingerprint()))
     {
         return password;
     }
@@ -48,18 +44,10 @@ std::string Account::get_password(std::string &owner_fingerprint) const
 
 std::string Account::get_exp_date(std::string &owner_fingerprint) const
 {
-    if (authenticate(owner_fingerprint))
+    if (authenticate(owner_fingerprint,owner->get_hashed_fingerprint()))
     {
         return exp_date;
     }
-}
-
-bool Account::authenticate(const std::string &owner_fingerprint) const
-{
-    if (owner->get_hashed_fingerprint() == std::hash<std::string>{}(owner_fingerprint))
-        return true;
-    // 抛出的异常类型需要再想想
-    throw std::invalid_argument("The fingerprint authenicated failed");
 }
 
 const std::string Account::random_account()
@@ -81,7 +69,7 @@ const std::string Account::random_account()
 }
 bool Account::set_password(std::string &password, std::string &owner_fingerprint)
 {
-    if (authenticate(owner_fingerprint))
+    if (authenticate(owner_fingerprint,owner->get_hashed_fingerprint()))
     {
         password = password;
     }

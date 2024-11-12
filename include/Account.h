@@ -26,7 +26,6 @@ public:
     std::string get_CVV2(std::string& owner_fingerprint) const;
     std::string get_password(std::string& owner_fingerprint) const;
     std::string get_exp_date(std::string& owner_fingerprint) const;
-    bool authenticate(const std::string& owner_fingerprint) const;
 
     const std::string random_account();
     // Setters requiring owner's fingerprint for authentication
